@@ -27,54 +27,50 @@ def accept_conn(host, port, conn_fileDir, conn_counter):
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         sock.settimeout(10)
 
+
+    # Opening listening socket
+    sock.bind((host, port))
+    sock.listen(1)
+
     try:
-        # Opening listening socket
-        sock.bind((host, port))
-        sock.listen(1)
+        while True:
+            # Accepts connection
+            clientSocket, clientAddress = sock.accept()
 
-        try:
-            while True:
-                # Accepts connection
-                clientSocket, clientAddress = sock.accept()
+            with clientSocket:
 
-                with clientSocket:
+                # Creates variable for command
+                cmd = b'accio\r\n'
 
-                    # Creates variable for command
-                    cmd = b'accio\r\n'
+                # Sends accio\r\n command
+                clientSocket.send(cmd)
 
-                    # Sends accio\r\n command
-                    clientSocket.send(cmd)
+                # Receives data for the first time
+                bytesRecv1 = clientSocket.recv(1024)
 
-                    # Receives data for the first time
-                    bytesRecv1 = clientSocket.recv(1024)
+                # Sends second accio\r\n command
+                cmd2Send = clientSocket.send(cmd)
 
-                    # Sends second accio\r\n command
-                    cmd2Send = clientSocket.send(cmd)
+                # Receives data for the second time
+                bytesRecv2 = clientSocket.recv(1024)
 
-                    # Receives data for the second time
-                    bytesRecv2 = clientSocket.recv(1024)
+                # Creates binary file
+                newFile = open("%s/%s.file" % (conn_fileDir, conn_counter), 'wb')
 
-                    # Creates binary file
-                    newFile = open("%s/%s.file" % (conn_fileDir, conn_counter), 'wb')
+                while True:
+                    recvFile = clientSocket.recv(1024)
+                    if not recvFile:
+                        break
+                    newFile.write(recvFile)
 
-                    while True:
-                        recvFile = clientSocket.recv(1024)
-                        if not recvFile:
-                            break
-                        newFile.write(recvFile)
-
-                    newFile.close()
-
-        except socket.error:
-            sys.stderr.write("ERROR: Failed to connect to functioning server\n")
-            newFile = open("%s/%s.file" % (conn_fileDir, conn_counter), 'w')
-            newFile.write("ERROR")
-            newFile.close()
+                newFile.close()
 
     except socket.error:
-        sys.stderr.write("ERROR: Fail to bind / execute\n")
-        exit(1)
-
+        sys.stderr.write("ERROR: Failed to connect to functioning server\n")
+        newFile = open("%s/%s.file" % (conn_fileDir, conn_counter), 'w')
+        newFile.write("ERROR")
+        newFile.close()
+        
 def main():
     try:
         host = '0.0.0.0'
@@ -106,8 +102,6 @@ def main():
         sys.stderr.write("ERROR: Failed to connect to functioning server\n")
 
 main()
-
-
 
 
 
