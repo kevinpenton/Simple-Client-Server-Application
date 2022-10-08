@@ -38,7 +38,7 @@ try:
         sock.listen(numOfConn)
 
 
-        def accept_conn(conn_Socket, conn_fileDir, conn_counter):
+        def accept_conn(conn_fileDir, conn_counter):
             try:
                 sock.settimeout(10)
                 # Accepts connection
@@ -53,7 +53,7 @@ try:
                     clientSocket.send(cmd)
 
                     #Creates binary file
-                    newFile = open("%s/s%.file" %(conn_fileDir,  conn_counter), 'wb')
+                    newFile = open("%s/%s.file" %(conn_fileDir,  conn_counter), 'wb')
 
                     while True:
                         recvFile = clientSocket.recv(1024)
@@ -68,12 +68,12 @@ try:
                 newFile = open("%s/s%.file" % (conn_fileDir, conn_counter), 'w')
                 newFile.write("ERROR")
                 newFile.close()
-        
+
         threads = []
         # Creates a thread for each connection
         for _ in range(numOfConn):
             counter += 1
-            t = threading.Thread(target=accept_conn, args=(clientSocket, fileDir, counter))
+            t = threading.Thread(target=accept_conn, args=(fileDir, counter))
             t.start()
             threads.append(t)
 
