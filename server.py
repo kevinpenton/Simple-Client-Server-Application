@@ -65,7 +65,7 @@ try:
 
             except socket.error:
                 sys.stderr.write("ERROR: Failed to connect to functioning server\n")
-                newFile = open("%s/s%.file" % (conn_fileDir, conn_counter), 'w')
+                newFile = open("%s/%s.file" % (conn_fileDir, conn_counter), 'w')
                 newFile.write("ERROR")
                 newFile.close()
 
