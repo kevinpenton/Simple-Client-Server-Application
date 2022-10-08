@@ -44,7 +44,7 @@ try:
                 # Accepts connection
                 clientSocket, clientAddress = sock.accept()
 
-                with conn_Socket:
+                with clientSocket:
 
                     # Creates variable for command
                     cmd = b'accio\r\n'
