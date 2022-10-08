@@ -52,6 +52,9 @@ try:
                     # Sends accio\r\n command
                     clientSocket.send(cmd)
 
+                    # Receives data for the first time
+                    bytesRecv1 = clientSocket.recv(1024)
+
                     #Creates binary file
                     newFile = open("%s/%s.file" %(conn_fileDir,  conn_counter), 'wb')
 
