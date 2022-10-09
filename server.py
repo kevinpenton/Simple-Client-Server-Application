@@ -26,8 +26,8 @@ try:
     host = '0.0.0.0'
     port = int(sys.argv[1])
     fileDir = sys.argv[2]
-    
-    conn_counter = 0
+
+    counter = 0
 
     # Creates the socket instance
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
@@ -41,9 +41,8 @@ try:
 
 
         # Function to accept a connection and process it accordingly
-        def setConn():
+        def setConn(conn_counter):
             try:
-                conn_counter += 1
                 # Accepts connection
                 clientSocket, clientAddress = sock.accept()
 
@@ -85,7 +84,8 @@ try:
 
         # Creates a thread for each connection
         for _ in range(numOfConn):
-            t = threading.Thread(target=setConn)
+            counter += 1
+            t = threading.Thread(target=setConn, args= counter)
             t.start()
             threads.append(t)
 
