@@ -45,7 +45,7 @@ try:
                 # Accepts connection
                 clientSocket, clientAddress = sock.accept()
                 print("Connection accepted successfully\n")
-                #clientSocket.settimeout(10)
+                clientSocket.settimeout(10)
 
                 with clientSocket:
                     # Creates variable for command
@@ -90,7 +90,7 @@ try:
                                                 sys.stderr.write("ERROR: File failed to receive data\n")
                                                 newFile.write("ERROR")
                                                 print("File received ERROR message successfully\n")
-                                                
+
                                         newFile.close()
 
                                     except socket.error:
