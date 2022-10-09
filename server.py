@@ -31,7 +31,7 @@ try:
 
     # Function to accept a connection and process it accordingly
     def setConn(conn_counter):
-        
+
         # Creates the socket instance
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -39,9 +39,9 @@ try:
 
             # Opening listening socket
             sock.bind((host, port))
-            numOfConn = 10
-            sock.listen(numOfConn)
-       
+            #numOfConn = 10
+            sock.listen(1)
+
             try:
                 while True:
                     # Accepts connection
@@ -85,7 +85,7 @@ try:
     threads = []
 
     # Creates a thread for each connection
-    for _ in range(numOfConn):
+    for _ in range(10):
         counter += 1
         t = threading.Thread(target=setConn, args= [counter])
         t.start()
@@ -97,4 +97,3 @@ try:
 except OverflowError:
     sys.stderr.write("ERROR: Invalid port number")
     exit(1)
-
