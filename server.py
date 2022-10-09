@@ -28,19 +28,20 @@ try:
 
     counter = 0
 
-    # Creates the socket instance
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        sock.settimeout(10)
 
-        # Opening listening socket
-        sock.bind((host, port))
-        numOfConn = 10
-        sock.listen(numOfConn)
+    # Function to accept a connection and process it accordingly
+    def setConn(conn_counter):
+        
+        # Creates the socket instance
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            sock.settimeout(10)
 
-
-        # Function to accept a connection and process it accordingly
-        def setConn(conn_counter):
+            # Opening listening socket
+            sock.bind((host, port))
+            numOfConn = 10
+            sock.listen(numOfConn)
+       
             try:
                 while True:
                     # Accepts connection
@@ -81,17 +82,17 @@ try:
                 newFile.close()
 
 
-        threads = []
+    threads = []
 
-        # Creates a thread for each connection
-        for _ in range(numOfConn):
-            counter += 1
-            t = threading.Thread(target=setConn, args= [counter])
-            t.start()
-            threads.append(t)
+    # Creates a thread for each connection
+    for _ in range(numOfConn):
+        counter += 1
+        t = threading.Thread(target=setConn, args= [counter])
+        t.start()
+        threads.append(t)
 
-        for thread in threads:
-            thread.join()
+    for thread in threads:
+        thread.join()
 
 except OverflowError:
     sys.stderr.write("ERROR: Invalid port number")
