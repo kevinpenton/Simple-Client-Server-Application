@@ -25,6 +25,9 @@ import socket
 try:
     host = '0.0.0.0'
     port = int(sys.argv[1])
+    fileDir = sys.argv[2]
+    
+    conn_counter = 0
 
     # Creates the socket instance
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
@@ -40,6 +43,7 @@ try:
         # Function to accept a connection and process it accordingly
         def setConn():
             try:
+                conn_counter += 1
                 # Accepts connection
                 clientSocket, clientAddress = sock.accept()
 
@@ -60,7 +64,7 @@ try:
                     bytesRecv2 = clientSocket.recv(1024)
 
                     # Creates binary file
-                    newFile = open("%s/%s.file" % (conn_fileDir, conn_counter), 'wb')
+                    newFile = open("%s/%s.file" % (fileDir, conn_counter), 'wb')
 
                     while True:
                         recvFile = clientSocket.recv(1024)
@@ -91,7 +95,6 @@ try:
 except OverflowError:
     sys.stderr.write("ERROR: Invalid port number")
     exit(1)
-
 
 
 
