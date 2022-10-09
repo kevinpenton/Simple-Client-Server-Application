@@ -86,6 +86,7 @@ try:
                                                 newFile.write(recvFile)
                                                 #print("Filed edited successfully")
 
+
                                             except socket.error:
                                                 sys.stderr.write("ERROR: File failed to receive data\n")
                                                 newFile.write("ERROR")
@@ -94,17 +95,26 @@ try:
 
                                         newFile.close()
 
+
                                     except socket.error:
                                         sys.stderr.write("ERROR: There was a problem creating the file\n")
 
                                 except socket.error:
                                     sys.stderr.write("ERROR: Failed to receive second command\n")
+                                    newFile = open("%s/%s.file" % (fileDir, conn_counter), 'wb')
+                                    print("File created successfully\n")
+                                    newFile.write("ERROR")
+                                    print("File received ERROR message successfully\n")
 
                             except socket.error:
                                 sys.stderr.write("ERROR: Failed to send second command\n")
 
                         except socket.error:
                             sys.stderr.write("ERROR: Failed to receive first command\n")
+                            newFile = open("%s/%s.file" % (fileDir, conn_counter), 'wb')
+                            print("File created successfully\n")
+                            newFile.write("ERROR")
+                            print("File received ERROR message successfully\n")
 
 
                     except socket.error:
@@ -112,6 +122,7 @@ try:
 
             except socket.error:
                 sys.stderr.write("ERROR: Failed to connect to functioning server\n")
+
 
         threads = []
 
@@ -128,5 +139,3 @@ try:
 except OverflowError:
     sys.stderr.write("ERROR: Invalid port number")
     exit(1)
-
-
