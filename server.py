@@ -1,4 +1,5 @@
-  * Project Info Header
+"""=====================================================================================================================
+ * Project Info Header
  *================================================================================
  *================================================================================
  *  Author: Kevin Penton
@@ -41,10 +42,11 @@ try:
 
         # Function to accept a connection and process it accordingly
         def setConn(conn_counter):
+            
+            # Accepts connection
+            clientSocket, clientAddress = sock.accept()
+            
             try:
-                # Accepts connection
-                clientSocket, clientAddress = sock.accept()
-
                 with clientSocket:
                     # Creates variable for command
                     cmd = b'accio\r\n'
@@ -91,12 +93,7 @@ try:
         for thread in threads:
             thread.join()
 
-    def sigHandler(self, signum, frame):
-        self.s.close()
-        raise Exception("Signal: ", signum, "Frame: ", frame)
-
 except OverflowError:
     sys.stderr.write("ERROR: Invalid port number")
     exit(1)
-
 
