@@ -42,44 +42,47 @@ try:
 
         # Function to accept a connection and process it accordingly
         def setConn(conn_counter):
-            #try:
-            # Accepts connection
-            clientSocket, clientAddress = sock.accept()
-            
-            with clientSocket:
-                # Creates variable for command
-                cmd = b'accio\r\n'
-
-                # Send first accio\r\n command
-                cmd1Send = clientSocket.send(cmd)
-
-                # Receives data for the first time
-                bytesRecv1 = clientSocket.recv(1024)
-
-                # Sends second accio\r\n command
-                cmd2Send = clientSocket.send(cmd)
-
-                # Receives data for the second time
-                bytesRecv2 = clientSocket.recv(1024)
-
-                # Creates binary file
-                newFile = open("%s/%s.file" % (fileDir, conn_counter), 'wb')
-
+            while True:
                 try:
-                    while True:
-                        recvFile = clientSocket.recv(1024)
-                        if not recvFile:
-                            break
-                        newFile.write(recvFile)
+                    # Accepts connection
+                    clientSocket, clientAddress = sock.accept()
+                    
+                    with clientSocket:
+                        # Creates variable for command
+                        cmd = b'accio\r\n'
 
-                    newFile.close()
+                        # Send first accio\r\n command
+                        cmd1Send = clientSocket.send(cmd)
 
+                        # Receives data for the first time
+                        bytesRecv1 = clientSocket.recv(1024)
+
+                        # Sends second accio\r\n command
+                        cmd2Send = clientSocket.send(cmd)
+
+                        # Receives data for the second time
+                        bytesRecv2 = clientSocket.recv(1024)
+
+                        # Creates binary file
+                        newFile = open("%s/%s.file" % (fileDir, conn_counter), 'wb')
+
+                        while True:
+                            try:
+                                recvFile = clientSocket.recv(1024)
+                                if not recvFile:
+                                    break
+                                newFile.write(recvFile)
+                                
+                            except socket.error:
+                                sys.stderr.write("ERROR: Failed receive data\n")
+                                newFile = open("%s/%s.file" % (fileDir, conn_counter), 'w')
+                                newFile.write("ERROR")
+                                break
+                        newFile.close()
+                    
                 except socket.error:
-                    sys.stderr.write("ERROR: Failed receive data\n")
-                    newFile = open("%s/%s.file" % (fileDir, conn_counter), 'w')
-                    newFile.write("ERROR")
-                    newFile.close()
-
+                    sys.stderr.write("ERROR: Connection timeout\n")
+                    continue
 
 
         threads = []
@@ -97,4 +100,3 @@ try:
 except OverflowError:
     sys.stderr.write("ERROR: Invalid port number")
     exit(1)
-
