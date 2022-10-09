@@ -77,22 +77,21 @@ try:
                                         newFile = open("%s/%s.file" % (fileDir, conn_counter), 'wb')
                                         print("File created successfully\n")
 
-                                        try:
-                                            while True:
+                                        while True:
+                                            try:
                                                 recvFile = clientSocket.recv(1024)
                                                 if not recvFile:
                                                     break
-                                                if recvFile:
-                                                    print("%d bytes received successfully" %len(recvFile))
-                                                    newFile.write(recvFile)
-                                                    print("Filed edited successfully")
-                                            newFile.close()
+                                                print("%d bytes received successfully" %len(recvFile))
+                                                newFile.write(recvFile)
+                                                print("Filed edited successfully")
 
-                                        except socket.error:
-                                            sys.stderr.write("ERROR: File failed to receive data\n")
-                                            newFile.write("ERROR")
-                                            print("File received ERROR message successfully\n")
-                                            newFile.close()
+                                            except socket.error:
+                                                sys.stderr.write("ERROR: File failed to receive data\n")
+                                                newFile.write("ERROR")
+                                                print("File received ERROR message successfully\n")
+                                                
+                                        newFile.close()
 
                                     except socket.error:
                                         sys.stderr.write("ERROR: There was a problem creating the file\n")
@@ -128,5 +127,4 @@ try:
 except OverflowError:
     sys.stderr.write("ERROR: Invalid port number")
     exit(1)
-
 
