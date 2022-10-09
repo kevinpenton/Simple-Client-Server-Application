@@ -42,40 +42,41 @@ try:
 
         # Function to accept a connection and process it accordingly
         def setConn(conn_counter):
-            try:
-                with clientSocket:
-                    # Creates variable for command
-                    cmd = b'accio\r\n'
+            #try:
+            with clientSocket:
+                # Creates variable for command
+                cmd = b'accio\r\n'
 
-                    # Send first accio\r\n command
-                    cmd1Send = clientSocket.send(cmd)
+                # Send first accio\r\n command
+                cmd1Send = clientSocket.send(cmd)
 
-                    # Receives data for the first time
-                    bytesRecv1 = clientSocket.recv(1024)
+                # Receives data for the first time
+                bytesRecv1 = clientSocket.recv(1024)
 
-                    # Sends second accio\r\n command
-                    cmd2Send = clientSocket.send(cmd)
+                # Sends second accio\r\n command
+                cmd2Send = clientSocket.send(cmd)
 
-                    # Receives data for the second time
-                    bytesRecv2 = clientSocket.recv(1024)
+                # Receives data for the second time
+                bytesRecv2 = clientSocket.recv(1024)
 
-                    # Creates binary file
-                    newFile = open("%s/%s.file" % (fileDir, conn_counter), 'wb')
-
+                # Creates binary file
+                newFile = open("%s/%s.file" % (fileDir, conn_counter), 'wb')
+                
+                try:
                     while True:
                         recvFile = clientSocket.recv(1024)
                         if not recvFile:
                             break
                         newFile.write(recvFile)
-
+    
                     newFile.close()
-
-            except socket.error:
-                sys.stderr.write("ERROR: Failed to connect to functioning server\n")
-                newFile = open("%s/%s.file" % (fileDir, conn_counter), 'w')
-                newFile.write("ERROR")
-                newFile.close()
-                exit(1)
+                    
+                except socket.error:
+                    sys.stderr.write("ERROR: Failed to connect to functioning server\n")
+                    newFile = open("%s/%s.file" % (fileDir, conn_counter), 'w')
+                    newFile.write("ERROR")
+                    newFile.close()
+                
 
 
         threads = []
