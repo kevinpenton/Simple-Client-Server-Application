@@ -1,4 +1,3 @@
-
 """=====================================================================================================================
  * Project Info Header
  *================================================================================
@@ -10,14 +9,13 @@
  *                 that this work is my own and that none of it is the work of any
  *                 other person.
  *
- *  Description: The simplified Accio server is a relatively simple application that waits for clients to connect,
- *               accepts a connection, sends the accio\r\n command, afterwards receives confirmation, sends the
- *               accio\r\n command again, receives the second confirmation, and then receives binary file that client
- *               sends,counts the number of bytes received, and prints it out as a single number (number of bytes
- *               received not including the header size).
+ *  Description: The Accio server is an extension of the simplified server that processes multiple simultaneous
+ *               connections in parallel and saves the received data into the specified folder (following the format
+ *               1.file, 2.file, etc.)
  *
- *  Usage: server-s.py <PORT>
+ *  Usage:  server.py <PORT> <FILE-DIR>
  *==================================================================================================================="""
+
 
 import threading
 import sys
@@ -61,20 +59,22 @@ try:
                     # Receives data for the second time
                     bytesRecv2 = clientSocket.recv(1024)
 
-                    # Receives file
-                    l = 0
+                    # Creates binary file
+                    newFile = open("%s/%s.file" % (conn_fileDir, conn_counter), 'wb')
+
                     while True:
                         recvFile = clientSocket.recv(1024)
-
                         if not recvFile:
                             break
-                        l += len(recvFile)
+                        newFile.write(recvFile)
 
-                    print(l)
+                    newFile.close()
 
             except socket.error:
                 sys.stderr.write("ERROR: Failed to connect to functioning server\n")
-                time.sleep(1)
+                newFile = open("%s/%s.file" % (conn_fileDir, conn_counter), 'w')
+                newFile.write("ERROR")
+                newFile.close()
 
 
         threads = []
@@ -91,6 +91,7 @@ try:
 except OverflowError:
     sys.stderr.write("ERROR: Invalid port number")
     exit(1)
+
 
 
 
