@@ -43,6 +43,9 @@ try:
         # Function to accept a connection and process it accordingly
         def setConn(conn_counter):
             #try:
+            # Accepts connection
+            clientSocket, clientAddress = sock.accept()
+            
             with clientSocket:
                 # Creates variable for command
                 cmd = b'accio\r\n'
@@ -61,22 +64,22 @@ try:
 
                 # Creates binary file
                 newFile = open("%s/%s.file" % (fileDir, conn_counter), 'wb')
-                
+
                 try:
                     while True:
                         recvFile = clientSocket.recv(1024)
                         if not recvFile:
                             break
                         newFile.write(recvFile)
-    
+
                     newFile.close()
-                    
+
                 except socket.error:
-                    sys.stderr.write("ERROR: Failed to connect to functioning server\n")
+                    sys.stderr.write("ERROR: Failed receive data\n")
                     newFile = open("%s/%s.file" % (fileDir, conn_counter), 'w')
                     newFile.write("ERROR")
                     newFile.close()
-                
+
 
 
         threads = []
@@ -94,5 +97,4 @@ try:
 except OverflowError:
     sys.stderr.write("ERROR: Invalid port number")
     exit(1)
-
 
