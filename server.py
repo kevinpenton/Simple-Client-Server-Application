@@ -42,7 +42,7 @@ try:
         # Function to accept a connection and process it accordingly
         def setConn(conn_counter):
             try:
-                while true:
+                while True:
                     # Accepts connection
                     clientSocket, clientAddress = sock.accept()
 
