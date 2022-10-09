@@ -1,4 +1,3 @@
-"""=====================================================================================================================
  * Project Info Header
  *================================================================================
  *================================================================================
@@ -21,6 +20,7 @@ import threading
 import sys
 import socket
 
+
 try:
     host = '0.0.0.0'
     port = int(sys.argv[1])
@@ -28,25 +28,24 @@ try:
 
     counter = 0
 
+    # Creates the socket instance
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        sock.settimeout(10)
 
-    # Function to accept a connection and process it accordingly
-    def setConn(conn_counter):
+        # Opening listening socket
+        sock.bind((host, port))
+        numOfConn = 10
+        sock.listen(numOfConn)
 
-        # Creates the socket instance
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-            sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            sock.settimeout(10)
 
-            # Opening listening socket
-            sock.bind((host, port))
-            #numOfConn = 10
-            sock.listen(1)
-
+        # Function to accept a connection and process it accordingly
+        def setConn(conn_counter):
             try:
-                while True:
-                    # Accepts connection
-                    clientSocket, clientAddress = sock.accept()
+                # Accepts connection
+                clientSocket, clientAddress = sock.accept()
 
+                with clientSocket:
                     # Creates variable for command
                     cmd = b'accio\r\n'
 
@@ -72,8 +71,6 @@ try:
                         newFile.write(recvFile)
 
                     newFile.close()
-                    clientConnection.close()
-                    break
 
             except socket.error:
                 sys.stderr.write("ERROR: Failed to connect to functioning server\n")
@@ -82,18 +79,23 @@ try:
                 newFile.close()
 
 
-    threads = []
+        threads = []
 
-    # Creates a thread for each connection
-    for _ in range(10):
-        counter += 1
-        t = threading.Thread(target=setConn, args= [counter])
-        t.start()
-        threads.append(t)
+        # Creates a thread for each connection
+        for _ in range(numOfConn):
+            counter += 1
+            t = threading.Thread(target=setConn, args= [counter])
+            t.start()
+            threads.append(t)
 
-    for thread in threads:
-        thread.join()
+        for thread in threads:
+            thread.join()
+
+    def sigHandler(self, signum, frame):
+        self.s.close()
+        raise Exception("Signal: ", signum, "Frame: ", frame)
 
 except OverflowError:
     sys.stderr.write("ERROR: Invalid port number")
     exit(1)
+
