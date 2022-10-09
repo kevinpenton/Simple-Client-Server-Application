@@ -104,6 +104,7 @@ try:
                                     newFile = open("%s/%s.file" % (fileDir, conn_counter), 'wb')
                                     print("File created successfully\n")
                                     newFile.write("ERROR")
+                                    newFile.close()
                                     print("File received ERROR message successfully\n")
 
                             except socket.error:
@@ -114,6 +115,7 @@ try:
                             newFile = open("%s/%s.file" % (fileDir, conn_counter), 'wb')
                             print("File created successfully\n")
                             newFile.write("ERROR")
+                            newFile.close()
                             print("File received ERROR message successfully\n")
 
 
@@ -139,3 +141,4 @@ try:
 except OverflowError:
     sys.stderr.write("ERROR: Invalid port number")
     exit(1)
+
