@@ -101,7 +101,7 @@ try:
 
                                 except socket.error:
                                     sys.stderr.write("ERROR: Failed to receive second command\n")
-                                    newFile = open("%s/%s.file" % (fileDir, conn_counter), 'wb')
+                                    newFile = open("%s/%s.file" % (fileDir, conn_counter), 'w')
                                     print("File created successfully\n")
                                     newFile.write("ERROR")
                                     newFile.close()
@@ -112,7 +112,7 @@ try:
 
                         except socket.error:
                             sys.stderr.write("ERROR: Failed to receive first command\n")
-                            newFile = open("%s/%s.file" % (fileDir, conn_counter), 'wb')
+                            newFile = open("%s/%s.file" % (fileDir, conn_counter), 'w')
                             print("File created successfully\n")
                             newFile.write("ERROR")
                             newFile.close()
@@ -141,4 +141,3 @@ try:
 except OverflowError:
     sys.stderr.write("ERROR: Invalid port number")
     exit(1)
-
