@@ -85,7 +85,7 @@ try:
         # Creates a thread for each connection
         for _ in range(numOfConn):
             counter += 1
-            t = threading.Thread(target=setConn, args= counter)
+            t = threading.Thread(target=setConn, args= [counter])
             t.start()
             threads.append(t)
 
@@ -95,6 +95,7 @@ try:
 except OverflowError:
     sys.stderr.write("ERROR: Invalid port number")
     exit(1)
+
 
 
 
