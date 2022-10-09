@@ -32,7 +32,6 @@ try:
     # Creates the socket instance
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        sock.settimeout(10)
 
         # Opening listening socket
         sock.bind((host, port))
@@ -42,11 +41,11 @@ try:
 
         # Function to accept a connection and process it accordingly
         def setConn(conn_counter):
-            
-            # Accepts connection
-            clientSocket, clientAddress = sock.accept()
-            
             try:
+                # Accepts connection
+                clientSocket, clientAddress = sock.accept()
+                clientSocket.settimeout(10)
+
                 with clientSocket:
                     # Creates variable for command
                     cmd = b'accio\r\n'
