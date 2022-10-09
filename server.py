@@ -42,9 +42,6 @@ try:
 
         # Function to accept a connection and process it accordingly
         def setConn(conn_counter):
-            
-            # Accepts connection
-            clientSocket, clientAddress = sock.accept()
             try:
                 with clientSocket:
                     # Creates variable for command
@@ -78,7 +75,7 @@ try:
                 newFile = open("%s/%s.file" % (fileDir, conn_counter), 'w')
                 newFile.write("ERROR")
                 newFile.close()
-                clientSocket.close()
+                exit(1)
 
 
         threads = []
@@ -96,8 +93,5 @@ try:
 except OverflowError:
     sys.stderr.write("ERROR: Invalid port number")
     exit(1)
-
-
-
 
 
