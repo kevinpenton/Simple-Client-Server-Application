@@ -44,41 +44,74 @@ try:
             try:
                 # Accepts connection
                 clientSocket, clientAddress = sock.accept()
-                clientSocket.settimeout(10)
+                print("Connection accepted successfully\n")
+                #clientSocket.settimeout(10)
 
                 with clientSocket:
                     # Creates variable for command
                     cmd = b'accio\r\n'
 
                     # Send first accio\r\n command
-                    cmd1Send = clientSocket.send(cmd)
+                    try:
+                        cmd1Send = clientSocket.send(cmd)
+                        print("First command sent successfully\n")
 
-                    # Receives data for the first time
-                    bytesRecv1 = clientSocket.recv(1024)
+                        try:
+                            # Receives data for the first time
+                            bytesRecv1 = clientSocket.recv(1024)
+                            if bytesRecv1:
+                                print("First command received successfully\n")
 
-                    # Sends second accio\r\n command
-                    cmd2Send = clientSocket.send(cmd)
+                            try:
+                                # Sends second accio\r\n command
+                                cmd2Send = clientSocket.send(cmd)
+                                print("Second command sent successfully\n")
+                                try:
+                                    # Receives data for the second time
+                                    bytesRecv2 = clientSocket.recv(1024)
+                                    if bytesRecv2:
+                                        print("Second command sent successfully\n")
 
-                    # Receives data for the second time
-                    bytesRecv2 = clientSocket.recv(1024)
+                                    # Creates binary file
+                                    try:
+                                        newFile = open("%s/%s.file" % (fileDir, conn_counter), 'wb')
+                                        print("File created successfully\n")
 
-                    # Creates binary file
-                    newFile = open((fileDir + "%i.file" %conn_counter), 'wb')
+                                        try:
+                                            while True:
+                                                recvFile = clientSocket.recv(1024)
+                                                if not recvFile:
+                                                    break
+                                                if recvFile:
+                                                    print("%d bytes received successfully", len(recvFile))
+                                                    newFile.write(recvFile)
+                                                    print("Filed edited successfully")
+                                            newFile.close()
 
-                    while True:
-                        recvFile = clientSocket.recv(1024)
-                        if not recvFile:
-                            break
-                        newFile.write(recvFile)
+                                        except socket.error:
+                                            sys.stderr.write("ERROR: File failed to receive data\n")
+                                            newFile.write("ERROR")
+                                            print("File received ERROR message successfully\n")
+                                            newFile.close()
 
-                    newFile.close()
+                                    except socket.error:
+                                        sys.stderr.write("ERROR: There was a problem creating the file\n")
+
+                                except socket.error:
+                                    sys.stderr.write("ERROR: Failed to receive second command\n")
+
+                            except socket.error:
+                                sys.stderr.write("ERROR: Failed to send second command\n")
+
+                        except socket.error:
+                            sys.stderr.write("ERROR: Failed to receive first command\n")
+
+
+                    except socket.error:
+                        sys.stderr.write("ERROR: Failed to send first command\n")
 
             except socket.error:
                 sys.stderr.write("ERROR: Failed to connect to functioning server\n")
-                newFile = open((fileDir + "%i.file" %conn_counter), 'w')
-                newFile.write("ERROR")
-                newFile.close()
-
 
         threads = []
 
@@ -95,3 +128,4 @@ try:
 except OverflowError:
     sys.stderr.write("ERROR: Invalid port number")
     exit(1)
+
