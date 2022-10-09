@@ -79,12 +79,12 @@ try:
 
                                         while True:
                                             try:
-                                                recvFile = clientSocket.recv(1024)
+                                                recvFile = clientSocket.recv(10000)
                                                 if not recvFile:
                                                     break
-                                                print("%d bytes received successfully" %len(recvFile))
+                                                #print("%d bytes received successfully" %len(recvFile))
                                                 newFile.write(recvFile)
-                                                print("Filed edited successfully")
+                                                #print("Filed edited successfully")
 
                                             except socket.error:
                                                 sys.stderr.write("ERROR: File failed to receive data\n")
