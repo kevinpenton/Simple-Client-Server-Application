@@ -17,91 +17,100 @@
  *==================================================================================================================="""
 
 import threading
-import sys
 import socket
+import sys
 
 
-def accept_conn(host, port, conn_fileDir, conn_counter):
-    # Creates the socket instance
+def connecting(ipaddress, port, directory, counter):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        sock.settimeout(10)
 
+        try:
+            sock.bind((ipaddress, port))
 
-    # Opening listening socket
-    sock.bind((host, port))
-    sock.listen(1)
+            sock.listen(10)
 
-    try:
-        while True:
-            # Accepts connection
-            clientSocket, clientAddress = sock.accept()
+            try:
+                sock.settimeout(10)
 
-            with clientSocket:
+                try:
 
-                # Creates variable for command
-                cmd = b'accio\r\n'
+                    while True:
 
-                # Sends accio\r\n command
-                clientSocket.send(cmd)
+                        (clientConnection, clientAddress) = sock.accept()
 
-                # Receives data for the first time
-                bytesRecv1 = clientSocket.recv(1024)
+                        clientConnection.send(b'accio\r\n')
 
-                # Sends second accio\r\n command
-                cmd2Send = clientSocket.send(cmd)
+                        recvMsg1 = clientConnection.recv(1024)
 
-                # Receives data for the second time
-                bytesRecv2 = clientSocket.recv(1024)
+                        clientConnection.send(b'accio\r\n')
 
-                # Creates binary file
-                newFile = open("%s/%s.file" % (conn_fileDir, conn_counter), 'wb')
+                        recvMsg2 = clientConnection.recv(1024)
 
-                while True:
-                    recvFile = clientSocket.recv(1024)
-                    if not recvFile:
+                        # This is where the file gets created and alloted into the file
+
+                        strcounter = str(counter) + ".file"
+                        completeFileName = os.path.join(directory, strcounter)
+                        file = open(completeFileName, 'wb')
+
+                        recvFile = clientConnection.recv(1024)
+
+                        while recvFile:
+                            file.write(recvFile)
+                            recvFile = clientConnection.recv(1024)
+
+                        file.close()
+                        clientConnection.close()
                         break
-                    newFile.write(recvFile)
 
-                newFile.close()
+                except:
+                    sys.stderr.write("ERROR: (Could not Listen)\n")
+                    exit(1)
 
-    except socket.error:
-        sys.stderr.write("ERROR: Failed to connect to functioning server\n")
-        newFile = open("%s/%s.file" % (conn_fileDir, conn_counter), 'w')
-        newFile.write("ERROR")
-        newFile.close()
-        
-def main():
-    try:
-        host = '0.0.0.0'
-        port = int(sys.argv[1])
-        fileDir = sys.argv[2]
-
-        if port < 1023 or port > 65535:
-            sys.stderr.write("ERROR: Out of range port number\n")
+            except:
+                strcounter = str(counter) + ".file"
+                completeFileName = os.path.join(directory, strcounter)
+                file = open(completeFileName, 'w')
+                file.write("ERROR")
+                file.close()
+                clientConnection.close()
+                exit(1)
+        except:
+            sys.stderr.write("ERROR: (Could not Bind/Execute)\n")
             exit(1)
 
-    except OverflowError:
-        sys.stderr.write("ERROR: Invalid port number")
+
+def main():
+    try:
+        ipaddress = "0.0.0.0"
+        port = int(sys.argv[1])
+        if port < 1023 or port > 65535:
+            sys.stderr.write("ERROR: (Out of Range Port #)\n")
+            exit(1)
+        directory = sys.argv[2]
+
+
+    except:
+        sys.stderr.write("ERROR: (Incorect Type [INTS ONLY])")
         exit(1)
 
     try:
         counter = 1
-        threads = []
-        # Creates a thread for each connection
-        for _ in range(1,11):
-            t = threading.Thread(target=accept_conn, args=(host, port, fileDir, counter))
-            t.start()
-            threads.append(t)
+
+        for _ in range(1, 11):
+            obj = threading.Thread(target=connecting, args=(ipaddress, port, directory, counter))
+            obj.start()
+            obj.join()
             counter += 1
 
-        for thread in threads:
-            thread.join()
 
-    except socket.error:
-        sys.stderr.write("ERROR: Failed to connect to functioning server\n")
+
+    except:
+        sys.stderr.write("ERROR: (Could not Connect)")
+
 
 main()
+
 
 
 
