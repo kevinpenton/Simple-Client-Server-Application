@@ -44,7 +44,7 @@ try:
             try:
                 # Accepts connection
                 clientSocket, clientAddress = sock.accept()
-                print("Connection accepted successfully\n")
+                print("Connection %d accepted successfully\n" %conn_counter)
                 clientSocket.settimeout(10)
 
                 with clientSocket:
@@ -74,7 +74,9 @@ try:
 
                                     # Creates binary file
                                     try:
-                                        newFile = open("%s/%s.file" % (fileDir, conn_counter), 'wb')
+                                        fileName = str(counter) + ".file"
+                                        completeFileName = os.path.join(fileDir, fileName)
+                                        newFile = open(completeFileName, 'wb')
                                         print("File created successfully\n")
 
                                         while True:
@@ -101,7 +103,9 @@ try:
 
                                 except socket.error:
                                     sys.stderr.write("ERROR: Failed to receive second command\n")
-                                    newFile = open("%s/%s.file" % (fileDir, conn_counter), 'w')
+                                    fileName = str(counter) + ".file"
+                                    completeFileName = os.path.join(fileDir, fileName)
+                                    newFile = open(completeFileName, 'w')
                                     print("File created successfully\n")
                                     newFile.write("ERROR")
                                     newFile.close()
@@ -112,7 +116,9 @@ try:
 
                         except socket.error:
                             sys.stderr.write("ERROR: Failed to receive first command\n")
-                            newFile = open("%s/%s.file" % (fileDir, conn_counter), 'w')
+                            fileName = str(counter) + ".file"
+                            completeFileName = os.path.join(fileDir, fileName)
+                            newFile = open(completeFileName, 'w')
                             print("File created successfully\n")
                             newFile.write("ERROR")
                             newFile.close()
@@ -123,7 +129,7 @@ try:
                         sys.stderr.write("ERROR: Failed to send first command\n")
 
             except socket.error:
-                sys.stderr.write("ERROR: Failed to connect to functioning server\n")
+                sys.stderr.write("ERROR: Connection %d failed to connect to functioning server\n" %conn_counter)
 
 
         threads = []
@@ -141,3 +147,4 @@ try:
 except OverflowError:
     sys.stderr.write("ERROR: Invalid port number")
     exit(1)
+
