@@ -90,6 +90,7 @@ try:
                                                 sys.stderr.write("ERROR: File failed to receive data\n")
                                                 newFile.write("ERROR")
                                                 print("File received ERROR message successfully\n")
+                                                break
 
                                         newFile.close()
 
@@ -127,4 +128,5 @@ try:
 except OverflowError:
     sys.stderr.write("ERROR: Invalid port number")
     exit(1)
+
 
