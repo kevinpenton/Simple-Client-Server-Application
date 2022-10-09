@@ -83,7 +83,7 @@ try:
                                                 if not recvFile:
                                                     break
                                                 if recvFile:
-                                                    print("%d bytes received successfully", len(recvFile))
+                                                    print("%d bytes received successfully" %len(recvFile))
                                                     newFile.write(recvFile)
                                                     print("Filed edited successfully")
                                             newFile.close()
@@ -128,4 +128,5 @@ try:
 except OverflowError:
     sys.stderr.write("ERROR: Invalid port number")
     exit(1)
+
 
