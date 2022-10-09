@@ -21,7 +21,6 @@ import threading
 import sys
 import socket
 
-
 try:
     host = '0.0.0.0'
     port = int(sys.argv[1])
@@ -42,8 +41,9 @@ try:
 
         # Function to accept a connection and process it accordingly
         def setConn(conn_counter):
-            for _ in range(numOfConn):
-                try:
+            
+            try:
+                while True:
                     # Accepts connection
                     clientSocket, clientAddress = sock.accept()
 
@@ -66,23 +66,22 @@ try:
                         # Creates binary file
                         newFile = open("%s/%s.file" % (fileDir, conn_counter), 'wb')
 
-                        while True:
-                            try:
-                                recvFile = clientSocket.recv(1024)
-                                if not recvFile:
-                                    break
-                                newFile.write(recvFile)
+                        recvFile = clientSocket.recv(1024)
 
-                            except socket.error:
-                                sys.stderr.write("ERROR: Failed receive data\n")
-                                newFile = open("%s/%s.file" % (fileDir, conn_counter), 'w')
-                                newFile.write("ERROR")
-                                break
+                        while recvFile:
+                            newFile.write(recvFile)
+                            recvFile = clientSocket.recv(1024)
+
                         newFile.close()
+                        break
 
-                except socket.error:
-                    sys.stderr.write("ERROR: Connection timeout\n")
-                    continue
+            except socket.error:
+                sys.stderr.write("ERROR: Failed to connect to functioning server\n")
+                newFile = open("%s/%s.file" % (fileDir, conn_counter), 'w')
+                newFile.write("ERROR")
+                newFile.close()
+
+                
 
 
         threads = []
