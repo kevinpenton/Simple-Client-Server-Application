@@ -78,6 +78,7 @@ try:
                 newFile = open("%s/%s.file" % (fileDir, conn_counter), 'w')
                 newFile.write("ERROR")
                 newFile.close()
+                clientSocket.close()
 
 
         threads = []
