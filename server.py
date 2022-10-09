@@ -63,7 +63,7 @@ try:
                     bytesRecv2 = clientSocket.recv(1024)
 
                     # Creates binary file
-                    newFile = open("%s/%s.file" % (fileDir, conn_counter), 'wb')
+                    newFile = open((fileDir + "%i.file" %conn_counter), 'wb')
 
                     while True:
                         recvFile = clientSocket.recv(1024)
@@ -75,7 +75,7 @@ try:
 
             except socket.error:
                 sys.stderr.write("ERROR: Failed to connect to functioning server\n")
-                newFile = open("%s/%s.file" % (fileDir, conn_counter), 'w')
+                newFile = open((fileDir + "%i.file" %conn_counter), 'w')
                 newFile.write("ERROR")
                 newFile.close()
 
@@ -95,4 +95,3 @@ try:
 except OverflowError:
     sys.stderr.write("ERROR: Invalid port number")
     exit(1)
-
