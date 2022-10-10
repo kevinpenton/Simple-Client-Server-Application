@@ -131,9 +131,9 @@ try:
         # Creates a thread for each connection
         for _ in range(numOfConn):
             t = threading.Thread(target=setConn, args= [counter])
-            counter += 1
             t.start()
             threads.append(t)
+            counter += 1
 
         for thread in threads:
             thread.join()
