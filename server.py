@@ -77,7 +77,6 @@ try:
                                         print("File created successfully\n")
 
                                         while True:
-                                            try:
                                                 recvFile = clientSocket.recv(10000)
                                                 if not recvFile:
                                                     break
@@ -85,15 +84,7 @@ try:
                                                 newFile.write(recvFile)
                                                 #print("Filed edited successfully")
 
-
-                                            except socket.error:
-                                                sys.stderr.write("ERROR: File failed to receive data\n")
-                                                newFile.write("ERROR")
-                                                print("File received ERROR message successfully\n")
-                                                break
-
                                         newFile.close()
-
 
                                     except socket.error:
                                         sys.stderr.write("ERROR: There was a problem creating the file\n")
@@ -140,5 +131,6 @@ try:
 except OverflowError:
     sys.stderr.write("ERROR: Invalid port number")
     exit(1)
+
 
 
