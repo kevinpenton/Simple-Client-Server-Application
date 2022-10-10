@@ -27,7 +27,7 @@ try:
     port = int(sys.argv[1])
     fileDir = sys.argv[2]
 
-    counter = 0
+    counter = 1
 
     # Creates the socket instance
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
@@ -130,8 +130,8 @@ try:
 
         # Creates a thread for each connection
         for _ in range(numOfConn):
-            counter += 1
             t = threading.Thread(target=setConn, args= [counter])
+            counter += 1
             t.start()
             threads.append(t)
 
