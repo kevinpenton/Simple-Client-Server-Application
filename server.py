@@ -20,7 +20,6 @@
 import threading
 import sys
 import socket
-import os
 
 
 try:
@@ -75,9 +74,8 @@ try:
 
                                     # Creates binary file
                                     try:
-                                        fileName = str(counter) + ".file"
-                                        completeFileName = os.path.join(fileDir, fileName)
-                                        newFile = open(completeFileName, 'wb')
+                                        filename = fileDir + "%d.file" % conn_counter
+                                        newFile = open(filename, 'wb')
                                         print("File created successfully\n")
 
                                         while True:
@@ -104,9 +102,8 @@ try:
 
                                 except socket.error:
                                     sys.stderr.write("ERROR: Failed to receive second command\n")
-                                    fileName = str(counter) + ".file"
-                                    completeFileName = os.path.join(fileDir, fileName)
-                                    newFile = open(completeFileName, 'w')
+                                    filename = fileDir + "%d.file" % conn_counter
+                                    newFile = open(filename, 'wb')
                                     print("File created successfully\n")
                                     newFile.write("ERROR")
                                     newFile.close()
@@ -117,9 +114,8 @@ try:
 
                         except socket.error:
                             sys.stderr.write("ERROR: Failed to receive first command\n")
-                            fileName = str(counter) + ".file"
-                            completeFileName = os.path.join(fileDir, fileName)
-                            newFile = open(completeFileName, 'w')
+                            filename = fileDir + "%d.file" % conn_counter
+                            newFile = open(filename, 'wb')
                             print("File created successfully\n")
                             newFile.write("ERROR")
                             newFile.close()
@@ -148,4 +144,5 @@ try:
 except OverflowError:
     sys.stderr.write("ERROR: Invalid port number")
     exit(1)
+
 
