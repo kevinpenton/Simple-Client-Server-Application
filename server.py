@@ -20,6 +20,8 @@
 import threading
 import sys
 import socket
+import signal
+
 
 
 try:
@@ -138,8 +140,15 @@ try:
         for thread in threads:
             thread.join()
 
+        def signal_handler(sig, frame):
+            print('You pressed Ctrl+C!')
+            sys.exit(0)
+
+        signal.signal(signal.SIGINT, signal_handler)
+        print('Press Ctrl+C')
+        signal.pause()
+
 except OverflowError:
     sys.stderr.write("ERROR: Invalid port number")
     exit(1)
-
 
