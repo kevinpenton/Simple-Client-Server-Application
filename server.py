@@ -20,18 +20,6 @@
 import threading
 import sys
 import socket
-import signal
-
-
-def sigHandler(self, signum, frame):
-    self.s.close()
-    raise Exception("Signal: ", signum, "Frame: ", frame)
-
-c = Server()
-signal.signal(signal.SIGQUIT, c.sigHandler)
-signal.signal(signal.SIGTERM, c.sigHandler)
-signal.signal(signal.SIGINT, c.sigHandler)
-
 
 try:
     host = '0.0.0.0'
