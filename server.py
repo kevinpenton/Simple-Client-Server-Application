@@ -103,7 +103,7 @@ try:
                                 except socket.error:
                                     sys.stderr.write("ERROR: Failed to receive second command\n")
                                     filename = fileDir + "%d.file" % conn_counter
-                                    newFile = open(filename, 'wb')
+                                    newFile = open(filename, 'w')
                                     print("File created successfully\n")
                                     newFile.write("ERROR")
                                     newFile.close()
@@ -115,7 +115,7 @@ try:
                         except socket.error:
                             sys.stderr.write("ERROR: Failed to receive first command\n")
                             filename = fileDir + "%d.file" % conn_counter
-                            newFile = open(filename, 'wb')
+                            newFile = open(filename, 'w')
                             print("File created successfully\n")
                             newFile.write("ERROR")
                             newFile.close()
