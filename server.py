@@ -27,8 +27,6 @@ try:
     port = int(sys.argv[1])
     fileDir = sys.argv[2]
 
-    counter = 1
-
     # Creates the socket instance
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -129,11 +127,10 @@ try:
         threads = []
 
         # Creates a thread for each connection
-        for _ in range(numOfConn):
-            t = threading.Thread(target=setConn, args= [counter])
+        for x in range(numOfConn):
+            t = threading.Thread(target=setConn, args= [x])
             t.start()
             threads.append(t)
-            counter += 1
 
         for thread in threads:
             thread.join()
@@ -141,5 +138,6 @@ try:
 except OverflowError:
     sys.stderr.write("ERROR: Invalid port number")
     exit(1)
+
 
 
